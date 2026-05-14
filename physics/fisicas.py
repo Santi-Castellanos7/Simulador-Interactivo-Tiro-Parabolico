@@ -1,6 +1,6 @@
 import math
 
-import constantes
+import constants
 
 angulo_rad = math.radians(constantes.ANGULO)
 
