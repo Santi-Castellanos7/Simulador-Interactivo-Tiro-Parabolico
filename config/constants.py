@@ -7,11 +7,29 @@ ALTO_VENTANA = info.current_w
 ANCHO_VENTANA = info.current_h-70
 
 #COLORES
-COLOR_BLANCO= (255, 255, 255)
-COLOR_NEGRO= (0, 0, 0)
-COLOR_AZUL = (50, 100, 255)
-COLOR_ROJO = (255, 50, 50)
-COLOR_VERDE = (50, 200, 50)
+# Fondo
+SKY_BLUE = (135, 206, 235)
+# Piso
+GRASS_GREEN = (70, 160, 70)
+# Panel lateral
+SIDEBAR = (35, 35, 45)
+# Panel interno
+CARD = (50, 50, 65)
+# Texto
+WHITE = (255, 255, 255)
+BLACK = (20, 20, 20)
+# Trayectoria
+YELLOW = (255, 220, 0)
+# Proyectil
+RED = (255, 70, 70)
+# Altura máxima
+GREEN = (0, 255, 120)
+# Alcance
+ORANGE = (255, 140, 0)
+# Bordes
+BORDER = (90, 90, 110)
+# Títulos
+CYAN = (0, 255, 255)
 
 #LA FRECUENCIA DE ACTUALIZACION
 FPS = 60
