@@ -4,7 +4,7 @@ import pygame
 info = pygame.display.Info()
 
 ALTO_VENTANA = info.current_w
-ANCHO_VENTANTA = info.current_h-70
+ANCHO_VENTANA = info.current_h-70
 
 #COLORES
 COLOR_BLANCO= (255, 255, 255)
