@@ -1,7 +1,6 @@
 import pygame
-import math
 
-import constants
+from config import constants
 
 #Inicializar la libreria de pygame
 pygame.init()
