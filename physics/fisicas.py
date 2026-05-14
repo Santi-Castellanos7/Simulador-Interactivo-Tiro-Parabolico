@@ -50,8 +50,3 @@ def calculate_position(
     proyectile_x = constants.INICIAL_X + (velocity_x*time*scale)
     proyectile_y = constants.INICIAL_Y - (velocity_y*time*scale)-(0.5*constants.GRAVEDAD*(time**2)*scale)
     return proyectile_x, proyectile_y
-
-
-
-#dibujar_texto (f"Velocidad Inicial : {constantes.VELOCIDAD_INICIAL} m/s"),
-                #constantes.info,constantes.COLOR_NEGRO,20,140)
