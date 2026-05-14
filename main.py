@@ -1,4 +1,4 @@
 import pygame
 
 class main:
-    print("Hola")
+    print("Amigos")
