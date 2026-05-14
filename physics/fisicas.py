@@ -32,7 +32,7 @@ def calcular_escala(
     scale = max(1, min(scale,20))
     return scale
 
-def calculate_velocity(
+def calcular_velocidad(
         initial_speed,
         angle
 ):
@@ -42,7 +42,7 @@ def calculate_velocity(
     velocity_y = (constants.VELOCIDAD_INICIAL*math.sin(constants.ANGULO))
     return velocity_x, velocity_y
 
-def calculate_position(
+def calcular_posicion(
         start_x, ground_y,
         velocity_x, velocity_y,
         gravity, time, scale
