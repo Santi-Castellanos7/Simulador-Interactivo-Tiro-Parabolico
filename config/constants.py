@@ -6,8 +6,8 @@ pygame.init()
 #RESOLUCION DINÁMICA PARA ACOMODAR LA RESOLUCION DE LA PANTALLA DE CADA USUARIO
 info = pygame.display.Info()
 
-ALTO_VENTANA = info.current_w
-ANCHO_VENTANA = info.current_h-70
+ALTO_VENTANA = info.current_h-70
+ANCHO_VENTANA = info.current_w
 
 #COLORES
 # Fondo
