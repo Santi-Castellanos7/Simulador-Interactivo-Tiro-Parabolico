@@ -1,6 +1,8 @@
 import pygame
 
 from config import constants
+from physics import fisicas
+from ui import draw
 
 #Inicializar la libreria de pygame
 pygame.init()
