@@ -1,6 +1,10 @@
 #ALTO Y ANCHO DE LA PANTALLA DEL JUEGO
-ALTO_VENTANA = 1080
-ANCHO_VENTANTA = 1920
+import pygame
+
+info = pygame.display.Info()
+
+ALTO_VENTANA = info.current_w
+ANCHO_VENTANTA = info.current_h-70
 
 #COLORES
 COLOR_BLANCO= (255, 255, 255)
