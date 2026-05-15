@@ -1,65 +1,48 @@
 import pygame
 
+# Inicializamos pygame solo para obtener la info de pantalla
 pygame.init()
 
-#ALTO Y ANCHO DE LA PANTALLA DEL JUEGO
-#RESOLUCION DINÁMICA PARA ACOMODAR LA RESOLUCION DE LA PANTALLA DE CADA USUARIO
+# =====================================================
+# RESOLUCIÓN DINÁMICA (Para que se adapte a cualquier PC)
+# =====================================================
 info = pygame.display.Info()
-
-ALTO_VENTANA = info.current_h-70
+# Restamos un poco al alto para que la barra de tareas no tape la ventana
+ALTO_VENTANA = info.current_h - 70
 ANCHO_VENTANA = info.current_w
 
-#COLORES
-# Fondo
-AZUL_CIELO = (135, 206, 235)
-# Piso
-VERDE_PASTO = (70, 160, 70)
-# Panel lateral
-PANEL_LATERAL = (35, 35, 45)
-# Panel interno
-PANEL_INTERNO = (50, 50, 65)
-# Texto
+# =====================================================
+# COLORES (Tu paleta personalizada)
+# =====================================================
+AZUL_CIELO = (135, 206, 235)   # Fondo
+VERDE_PASTO = (70, 160, 70)    # Suelo
+PANEL_LATERAL = (35, 35, 45)   # UI
+PANEL_INTERNO = (50, 50, 65)   # Tarjetas
+BORDES = (90, 90, 110)         # Líneas de contorno
 BLANCO = (255, 255, 255)
 NEGRO = (20, 20, 20)
-# Trayectoria
-AMARILLO = (255, 220, 0)
-# Proyectil
-ROJO = (255, 70, 70)
-# Altura máxima
-VERDE = (0, 255, 120)
-# Alcance
-NARANJA = (255, 140, 0)
-# Bordes
-BORDES = (90, 90, 110)
-# Títulos
-CYAN = (0, 255, 255)
+AMARILLO = (255, 220, 0)       # Trayectoria
+ROJO = (255, 70, 70)           # Proyectil
+VERDE = (0, 255, 120)          # Altura Máxima
+NARANJA = (255, 140, 0)        # Alcance
+CYAN = (0, 255, 255)           # Títulos
 
-#LA FRECUENCIA DE ACTUALIZACION
+# =====================================================
+# CONFIGURACIÓN FÍSICA Y SIMULACIÓN
+# =====================================================
 FPS = 60
+GRAVEDAD = 9.81                # Gravedad terrestre estándar
 
-#GRAVEDAD
-GRAVEDAD = 9.8
-
-#DATOS PROYECTIL
-VELOCIDAD_INICIAL = 0
+# Valores por defecto para el inicio
+VELOCIDAD_INICIAL = 50
 ANGULO = 45
-
-#POSICION INICIAL
-INICIAL_X = 50
-INICIAL_Y = ANCHO_VENTANA-50
-
-#TIEMPO
 TIEMPO = 0
-
-#ESTADO INICIAL DEL LANZAMIENTO
 LANZADOR = False
-
-#TRAYECTORIA: LISTA QUE ALMACENA LOS PUNTOS
 TRAYECTORIA = []
-
-#ESCALA
 ESCALA_INICIAL = 10
 
-
-
-
+# =====================================================
+# POSICIÓN INICIAL DEL LANZAMIENTO
+# =====================================================
+INICIAL_X = 350                # Dejamos espacio para el panel lateral de 320px
+INICIAL_Y = ALTO_VENTANA - 120 # Justo encima del suelo

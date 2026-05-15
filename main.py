@@ -1,22 +1,14 @@
 import pygame
 
 # =========================
-# IMPORTAR CONSTANTES
+# IMPORTAR MÓDULOS
 # =========================
-from config.constants import *
-
-# =========================
-# IMPORTAR FÍSICA
-# =========================
+from config import constants
 from physics.fisicas import (
     calcular_escala,
     calcular_velocidad,
     calcular_posicion
 )
-
-# =========================
-# IMPORTAR INTERFAZ
-# =========================
 from ui.draw import (
     draw_text,
     draw_trajectory,
@@ -28,62 +20,34 @@ from ui.draw import (
 # =========================
 pygame.init()
 
-# =========================
-# CREAR VENTANA
-# =========================
-screen = pygame.display.set_mode(
-    (
-        ANCHO_VENTANA,
-        ALTO_VENTANA
-    )
-)
-
-pygame.display.set_caption(
-    "Simulador de Tiro Parabólico"
-)
-
+screen = pygame.display.set_mode((constants.ANCHO_VENTANA, constants.ALTO_VENTANA))
+pygame.display.set_caption("Simulador de Tiro Parabólico - UPTC")
 clock = pygame.time.Clock()
 
 # =========================
 # FUENTES
 # =========================
-title_font = pygame.font.SysFont(
-    "Arial",
-    34,
-    bold=True
-)
-
-info_font = pygame.font.SysFont(
-    "Arial",
-    24
-)
-
-small_font = pygame.font.SysFont(
-    "Arial",
-    20
-)
+title_font = pygame.font.SysFont("Arial", 30, bold=True)
+info_font = pygame.font.SysFont("Arial", 22)
+small_font = pygame.font.SysFont("Arial", 18)
 
 # =========================
-# VARIABLES DEL PROYECTIL
+# VARIABLES DE ESTADO
 # =========================
-velocidad_inicial = VELOCIDAD_INICIAL
+velocidad_inicial = constants.VELOCIDAD_INICIAL
+angulo = constants.ANGULO
+escala = constants.ESCALA_INICIAL
+tiempo = 0
+lanzamiento_activo = False
 
-angulo = ANGULO
+# Variables de velocidad actual para la interfaz
+v_x_actual = 0
+v_y_actual = 0
 
-escala = ESCALA_INICIAL
-
-# =========================
-# VARIABLES DE SIMULACIÓN
-# =========================
-tiempo = TIEMPO
-
-lanzamiento_activo = LANZADOR
-
-proyectil_x = INICIAL_X
-proyectil_y = INICIAL_Y
+proyectil_x = constants.INICIAL_X
+proyectil_y = constants.INICIAL_Y
 
 trayectoria = []
-
 altura_maxima = 0
 alcance_maximo = 0
 
@@ -94,401 +58,140 @@ punto_alcance = None
 # BUCLE PRINCIPAL
 # =========================
 running = True
-
 while running:
 
-    # Controlar FPS
-    clock.tick(FPS)
+    dt = clock.tick(constants.FPS) / 1000
 
-    # =========================
-    # EVENTOS
-    # =========================
     for event in pygame.event.get():
-
-        # Cerrar ventana
         if event.type == pygame.QUIT:
             running = False
 
-        # Eventos del teclado
         if event.type == pygame.KEYDOWN:
-
-            # =========================
-            # INICIAR LANZAMIENTO
-            # =========================
             if event.key == pygame.K_SPACE:
-
                 lanzamiento_activo = True
-
                 tiempo = 0
-
                 trayectoria.clear()
-
                 altura_maxima = 0
                 alcance_maximo = 0
-
                 punto_altura_maxima = None
                 punto_alcance = None
 
-                # Calcular escala dinámica
                 escala = calcular_escala(
-                    ANCHO_VENTANA,
-                    ALTO_VENTANA,
-                    INICIAL_X,
-                    INICIAL_Y,
-                    velocidad_inicial,
-                    angulo,
-                    GRAVEDAD
+                    constants.ANCHO_VENTANA, constants.ALTO_VENTANA,
+                    constants.INICIAL_X, constants.INICIAL_Y,
+                    velocidad_inicial, angulo, constants.GRAVEDAD
                 )
 
-            # =========================
-            # REINICIAR SIMULACIÓN
-            # =========================
             if event.key == pygame.K_r:
-
                 lanzamiento_activo = False
-
                 tiempo = 0
-
-                proyectil_x = INICIAL_X
-                proyectil_y = INICIAL_Y
-
+                proyectil_x = constants.INICIAL_X
+                proyectil_y = constants.INICIAL_Y
                 trayectoria.clear()
+                punto_altura_maxima = None
+                punto_alcance = None
 
-            # =========================
-            # MODIFICAR VELOCIDAD
-            # =========================
-            if event.key == pygame.K_UP:
-                velocidad_inicial += 2
+            if event.key == pygame.K_UP: velocidad_inicial += 2
+            if event.key == pygame.K_DOWN: velocidad_inicial -= 2
+            if event.key == pygame.K_RIGHT: angulo += 2
+            if event.key == pygame.K_LEFT: angulo -= 2
 
-            if event.key == pygame.K_DOWN:
-                velocidad_inicial -= 2
-
-            # =========================
-            # MODIFICAR ÁNGULO
-            # =========================
-            if event.key == pygame.K_RIGHT:
-                angulo += 2
-
-            if event.key == pygame.K_LEFT:
-                angulo -= 2
+    # Cálculos cinemáticos base
+    velocidad_inicial = max(5, min(velocidad_inicial, 100))
+    angulo = max(5, min(angulo, 85))
+    v_x_inicial, v_y_inicial = calcular_velocidad(velocidad_inicial, angulo)
 
     # =========================
-    # VALIDACIONES
-    # =========================
-    velocidad_inicial = max(
-        5,
-        min(velocidad_inicial, 100)
-    )
-
-    angulo = max(
-        5,
-        min(angulo, 85)
-    )
-
-    # =========================
-    # CALCULAR VELOCIDADES
-    # =========================
-    velocidad_x, velocidad_y = calcular_velocidad(
-        velocidad_inicial,
-        angulo
-    )
-
-    # =========================
-    # FONDO
-    # =========================
-    screen.fill(AZUL_CIELO)
-
-    # =========================
-    # PANEL LATERAL
-    # =========================
-    pygame.draw.rect(
-        screen,
-        PANEL_LATERAL,
-        (0, 0, 320, ALTO_VENTANA),
-        border_radius=15
-    )
-
-    # =========================
-    # TARJETA INFORMACIÓN
-    # =========================
-    pygame.draw.rect(
-        screen,
-        PANEL_INTERNO,
-        (15, 80, 290, 340),
-        border_radius=15
-    )
-
-    pygame.draw.rect(
-        screen,
-        BORDES,
-        (15, 80, 290, 340),
-        3,
-        border_radius=15
-    )
-
-    # =========================
-    # TARJETA CONTROLES
-    # =========================
-    pygame.draw.rect(
-        screen,
-        PANEL_INTERNO,
-        (15, 450, 290, 180),
-        border_radius=15
-    )
-
-    pygame.draw.rect(
-        screen,
-        BORDES,
-        (15, 450, 290, 180),
-        3,
-        border_radius=15
-    )
-
-    # =========================
-    # TÍTULO
-    # =========================
-    draw_text(
-        screen,
-        "SIMULADOR FÍSICA",
-        title_font,
-        CYAN,
-        20,
-        20
-    )
-
-    # =========================
-    # INFORMACIÓN
-    # =========================
-    draw_text(
-        screen,
-        f"Velocidad Inicial: {velocidad_inicial} m/s",
-        info_font,
-        BLANCO,
-        30,
-        100
-    )
-
-    draw_text(
-        screen,
-        f"Ángulo: {angulo}°",
-        info_font,
-        BLANCO,
-        30,
-        140
-    )
-
-    draw_text(
-        screen,
-        f"Tiempo: {round(tiempo, 2)} s",
-        info_font,
-        BLANCO,
-        30,
-        180
-    )
-
-    draw_text(
-        screen,
-        f"Velocidad X: {round(velocidad_x, 2)}",
-        info_font,
-        BLANCO,
-        30,
-        220
-    )
-
-    draw_text(
-        screen,
-        f"Velocidad Y: {round(velocidad_y, 2)}",
-        info_font,
-        BLANCO,
-        30,
-        260
-    )
-
-    draw_text(
-        screen,
-        f"Altura Máxima: {round(altura_maxima, 2)} m",
-        info_font,
-        BLANCO,
-        30,
-        300
-    )
-
-    draw_text(
-        screen,
-        f"Alcance Máximo: {round(alcance_maximo, 2)} m",
-        info_font,
-        BLANCO,
-        30,
-        340
-    )
-
-    # =========================
-    # CONTROLES
-    # =========================
-    draw_text(
-        screen,
-        "CONTROLES",
-        info_font,
-        CYAN,
-        30,
-        470
-    )
-
-    controles = [
-        "ESPACIO = Lanzar",
-        "R = Reiniciar",
-        "↑ ↓ = Velocidad",
-        "← → = Ángulo"
-    ]
-
-    for i, control in enumerate(controles):
-
-        draw_text(
-            screen,
-            control,
-            small_font,
-            BLANCO,
-            30,
-            520 + (i * 30)
-        )
-
-    # =========================
-    # DIBUJAR PISO
-    # =========================
-    draw_ground(
-        screen,
-        VERDE_PASTO,
-        ANCHO_VENTANA,
-        INICIAL_Y
-    )
-
-    # =========================
-    # MOVIMIENTO
+    # LÓGICA DE MOVIMIENTO
     # =========================
     if lanzamiento_activo:
-
-        # Actualizar tiempo
-        tiempo += 0.05
-
-        # Calcular posición
+        tiempo += dt * 2
         proyectil_x, proyectil_y = calcular_posicion(
-            INICIAL_X,
-            INICIAL_Y,
-            velocidad_x,
-            velocidad_y,
-            GRAVEDAD,
-            tiempo,
-            escala
+            constants.INICIAL_X, constants.INICIAL_Y,
+            v_x_inicial, v_y_inicial, constants.GRAVEDAD, tiempo, escala
         )
 
-        # Guardar trayectoria
-        trayectoria.append(
-            (
-                proyectil_x,
-                proyectil_y
-            )
-        )
+        # Actualizamos velocidades mientras vuela
+        v_x_actual = v_x_inicial
+        v_y_actual = v_y_inicial - (constants.GRAVEDAD * tiempo)
 
-        # Calcular altura máxima
-        altura_actual = (
-                                INICIAL_Y - proyectil_y
-                        ) / escala
+        if proyectil_y <= constants.INICIAL_Y:
+            trayectoria.append((proyectil_x, proyectil_y))
 
-        if altura_actual > altura_maxima:
+            # Altura máxima
+            alt_actual = (constants.INICIAL_Y - proyectil_y) / escala
+            if alt_actual > altura_maxima:
+                altura_maxima = alt_actual
+                punto_altura_maxima = (proyectil_x, proyectil_y)
 
-            altura_maxima = altura_actual
-
-            punto_altura_maxima = (
-                proyectil_x,
-                proyectil_y
-            )
-
-        # Calcular alcance
-        alcance_maximo = (
-                                 proyectil_x - INICIAL_X
-                         ) / escala
-
-        # Detectar impacto
-        if proyectil_y >= INICIAL_Y:
-
-            punto_alcance = (
-                proyectil_x,
-                INICIAL_Y
-            )
-
-            proyectil_y = INICIAL_Y
-
+            alcance_maximo = (proyectil_x - constants.INICIAL_X) / escala
+        else:
+            # IMPACTO: Forzamos todo a cero
+            punto_alcance = (proyectil_x, constants.INICIAL_Y)
+            proyectil_y = constants.INICIAL_Y
+            v_x_actual = 0
+            v_y_actual = 0
             lanzamiento_activo = False
+    else:
+        # Reposo o ajuste de parámetros
+        v_x_actual = 0
+        v_y_actual = 0
 
     # =========================
-    # DIBUJAR TRAYECTORIA
+    # RENDERIZADO (DIBUJO)
     # =========================
-    draw_trajectory(
-        screen,
-        trayectoria,
-        AMARILLO
-    )
+    screen.fill(constants.AZUL_CIELO)
+    draw_ground(screen, constants.VERDE_PASTO, constants.ANCHO_VENTANA, constants.INICIAL_Y)
 
-    # =========================
-    # ALTURA MÁXIMA
-    # =========================
+    # PANEL LATERAL
+    pygame.draw.rect(screen, constants.PANEL_LATERAL, (0, 0, 320, constants.ALTO_VENTANA))
+    draw_text(screen, "SIMULADOR FÍSICA", title_font, constants.CYAN, 20, 20)
+
+    # RECUADRO DE DATOS
+    pygame.draw.rect(screen, constants.PANEL_INTERNO, (15, 70, 290, 320), border_radius=12)
+    pygame.draw.rect(screen, constants.BORDES, (15, 70, 290, 320), 2, border_radius=12)
+
+    textos_datos = [
+        f"V. Inicial: {velocidad_inicial} m/s",
+        f"Ángulo: {angulo}°",
+        f"Vel X Actual: {round(v_x_actual, 2)} m/s",
+        f"Vel Y Actual: {round(v_y_actual, 2)} m/s",
+        f"Tiempo: {round(tiempo, 2)} s",
+        f"Alt. Máx: {round(altura_maxima, 2)} m",
+        f"Alcance: {round(alcance_maximo, 2)} m"
+    ]
+    for i, t in enumerate(textos_datos):
+        draw_text(screen, t, info_font, constants.BLANCO, 30, 85 + (i * 38))
+
+    # RECUADRO DE CONTROLES
+    pygame.draw.rect(screen, constants.PANEL_INTERNO, (15, 410, 290, 160), border_radius=12)
+    pygame.draw.rect(screen, constants.BORDES, (15, 410, 290, 160), 2, border_radius=12)
+
+    draw_text(screen, "CONTROLES", info_font, constants.CYAN, 30, 425)
+    controles = [
+        "[ESPACIO] Lanzar Proyectil",
+        "[R] Reiniciar Simulación",
+        "[↑ / ↓] Ajustar Velocidad",
+        "[← / →] Ajustar Ángulo"
+    ]
+    for i, inst in enumerate(controles):
+        draw_text(screen, inst, small_font, constants.BLANCO, 30, 465 + (i * 22))
+
+    # DIBUJAR TRAYECTORIA Y PROYECTIL
+    draw_trajectory(screen, trayectoria, constants.AMARILLO)
+
     if punto_altura_maxima:
+        pygame.draw.circle(screen, constants.VERDE, (int(punto_altura_maxima[0]), int(punto_altura_maxima[1])), 6)
+        draw_text(screen, f"Altura máxima: {round(altura_maxima, 1)}m", small_font, constants.NEGRO,
+                  punto_altura_maxima[0] - 15, punto_altura_maxima[1] - 25)
 
-        pygame.draw.line(
-            screen,
-            VERDE,
-            (
-                int(punto_altura_maxima[0]),
-                INICIAL_Y
-            ),
-            (
-                int(punto_altura_maxima[0]),
-                int(punto_altura_maxima[1])
-            ),
-            2
-        )
-
-        pygame.draw.circle(
-            screen,
-            VERDE,
-            (
-                int(punto_altura_maxima[0]),
-                int(punto_altura_maxima[1])
-            ),
-            8
-        )
-
-    # =========================
-    # ALCANCE MÁXIMO
-    # =========================
     if punto_alcance:
+        pygame.draw.circle(screen, constants.NARANJA, (int(punto_alcance[0]), int(punto_alcance[1])), 10)
+        draw_text(screen, f"Alcance máxima: {round(alcance_maximo, 1)}m", small_font, constants.NEGRO,
+                  punto_alcance[0] - 40, punto_alcance[1] + 15)
 
-        pygame.draw.circle(
-            screen,
-            NARANJA,
-            (
-                int(punto_alcance[0]),
-                int(punto_alcance[1])
-            ),
-            10
-        )
+    pygame.draw.circle(screen, constants.ROJO, (int(proyectil_x), int(proyectil_y)), 14)
 
-    # =========================
-    # DIBUJAR PROYECTIL
-    # =========================
-    pygame.draw.circle(
-        screen,
-        ROJO,
-        (
-            int(proyectil_x),
-            int(proyectil_y)
-        ),
-        14
-    )
-
-    # =========================
-    # ACTUALIZAR PANTALLA
-    # =========================
     pygame.display.update()
 
 pygame.quit()
