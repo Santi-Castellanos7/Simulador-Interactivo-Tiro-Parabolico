@@ -15,7 +15,7 @@ ANCHO_VENTANA = info.current_w
 # COLORES (Tu paleta personalizada)
 # =====================================================
 AZUL_CIELO = (135, 206, 235)   # Fondo
-VERDE_PASTO = (70, 160, 70)    # Suelo
+VERDE_PASTO = (47, 61, 39)    # Suelo
 PANEL_LATERAL = (35, 35, 45)   # UI
 PANEL_INTERNO = (50, 50, 65)   # Tarjetas
 BORDES = (90, 90, 110)         # Líneas de contorno
