@@ -3,7 +3,7 @@ import math
 from config import constants
 
 def calcular_escala(width, height, start_x, ground_y, initial_speed, angle, gravity):
-    """Calcula una escala dinámica para que la trayectoria quepa en la pantalla."""
+    #Calcula una escala dinamica para que la trayectoria quepa en la pantalla.
     angle_rad = math.radians(angle)
 
     # Ecuaciones físicas del alcance (R) y altura máxima (H)
@@ -23,14 +23,14 @@ def calcular_escala(width, height, start_x, ground_y, initial_speed, angle, grav
     return max(1, min(scale * 0.85, 20))
 
 def calcular_velocidad(initial_speed, angle):
-    """Descompone la velocidad inicial en sus componentes X e Y."""
+    #Descompone la velocidad inicial en sus componentes X e Y.
     angle_rad = math.radians(angle)
     velocity_x = initial_speed * math.cos(angle_rad)
     velocity_y = initial_speed * math.sin(angle_rad)
     return velocity_x, velocity_y
 
 def calcular_posicion(start_x, ground_y, velocity_x, velocity_y, gravity, time, scale):
-    """Calcula las coordenadas (x, y) en pixeles para un tiempo 't' dado."""
+    #Calcula las coordenadas (x, y) en px para un tiempo 't' dado.
     # Movimiento horizontal (MRU)
     proyectile_x = start_x + (velocity_x * time * scale)
     # Movimiento vertical (MRUV) - Se resta de ground_y porque el eje Y en Pygame baja

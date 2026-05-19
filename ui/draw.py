@@ -1,18 +1,14 @@
 import pygame
 from config import constants
-
-# =============================================================
-# PAQUETE: ui/draw.py
 # Este módulo contiene todas las funciones de dibujo/renderizado
 # de la interfaz visual del simulador.
-# =============================================================
 
 # Variables globales para los sprites del fondo.
 # Se declaran vacías aquí porque pygame aún no está listo al importar.
 # Se llenan la primera vez que se llama a cargar_sprites().
 cielo    = None   # Imagen de fondo con cielo y nubes
 montanas = None   # Imagen de montañas con transparencia
-suelo    = None   # NUEVO: imagen de árboles y pasto con transparencia
+suelo    = None   # imagen de árboles y pasto con transparencia
 
 
 def cargar_sprites():
@@ -60,8 +56,8 @@ def cargar_sprites():
 def draw_background_sprites(screen):
     """
     Dibuja las tres capas del fondo en orden (de atrás hacia adelante):
-      1. Cielo/nubes  (la más lejana)
-      2. Montañas     (capa media)
+      1. Cielo/nubes (la más lejana)
+      2. Montañas (capa media)
       3. Árboles/pasto (la más cercana al suelo)
     Todas se dibujan a partir de x=320 para no tapar el panel lateral.
     """
@@ -73,7 +69,7 @@ def draw_background_sprites(screen):
     # Capa 2: montañas — se superpone sobre el cielo
     screen.blit(montanas, (320, 0))
 
-    # NUEVO — Capa 3: árboles/pasto
+    # Capa 3: árboles/pasto
     # La posicionamos alineada con el suelo (INICIAL_Y).
     # Restamos el alto de la imagen para que su borde inferior quede
     # justo en la línea del suelo, simulando que los árboles "crecen" desde ahí.
@@ -94,7 +90,7 @@ def draw_text(ventana, text, font, color, x, y):
 
 def draw_label_with_bg(screen, text, font, x, y):
     """
-    NUEVO: Dibuja una etiqueta de texto con un rectángulo blanco semitransparente
+    Dibuja una etiqueta de texto con un rectángulo blanco semitransparente
     detrás, para que sea legible aunque caiga sobre el fondo de montañas.
 
     Parámetros:
@@ -134,7 +130,7 @@ def draw_trajectory(screen, trajectory, color):
 
 def draw_impact_line(screen, punto_alcance):
     """
-    NUEVO: Dibuja una línea vertical desde el punto de impacto hasta el suelo.
+    Dibuja una línea vertical desde el punto de impacto hasta el suelo.
     Esto hace más claro visualmente dónde exactamente cayó el proyectil,
     especialmente cuando el marcador circular queda sobre la línea del suelo.
 
@@ -163,18 +159,4 @@ def draw_ground(screen, color, width, ground_y):
     Las capas de pasto/árboles se dibujan encima en draw_background_sprites().
     """
     pygame.draw.rect(screen, color, (320, ground_y, width, 120))
-
-
-# def draw_text(ventana, text, font, color, x, y):
-#     render = font.render(text, True, color)
-#     ventana.blit(render, (x, y))
-#
-# def draw_trajectory(screen, trajectory, color):
-#     # Dibujamos círculos pequeños para la trayectoria
-#     for point in trajectory:
-#         pygame.draw.circle(screen, color, (int(point[0]), int(point[1])), 4)
-#
-# def draw_ground(screen, color, width, ground_y):
-#       #El suelo ahora se dibuja desde el panel lateral hacia la derecha
-#     pygame.draw.rect(screen, color, (320, ground_y, width, 120))
 
