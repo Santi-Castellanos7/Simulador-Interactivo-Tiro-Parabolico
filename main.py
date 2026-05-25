@@ -12,8 +12,8 @@ from ui.draw import (
     draw_trajectory,
     draw_background_sprites,
     draw_ground,
-    draw_label_with_bg,   # NUEVO: etiquetas con fondo semitransparente
-    draw_impact_line      # NUEVO: línea vertical en el punto de impacto
+    draw_label_with_bg,   # etiquetas con fondo semitransparente
+    draw_impact_line      # línea vertical en el punto de impacto
 )
 
 # INICIALIZAR PYGAME
